@@ -9,13 +9,14 @@ using Shared;
 
 namespace Services.MappingProfiles
 {
-    public class ProtectProfile:Profile
+    public class ProductProfile:Profile
     {
-        public ProtectProfile()
+        public ProductProfile()
         {
             CreateMap<Product, ProductResultDto>()
                 .ForMember(d => d.BrandName, o => o.MapFrom(s => s.ProductBrand.Name))
-                .ForMember(d => d.TypeName, o => o.MapFrom(s => s.ProductType.Name));
+                .ForMember(d => d.TypeName, o => o.MapFrom(s => s.ProductType.Name))
+                .ForMember(d => d.PictureUrl, o => o.MapFrom<PictureUrlResolver>());
                
 
             CreateMap<ProductBrand, BrandResultDto>();

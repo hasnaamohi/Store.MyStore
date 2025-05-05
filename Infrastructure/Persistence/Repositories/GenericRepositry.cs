@@ -19,7 +19,7 @@ namespace Persistence.Repositories
         {
             _context = context;
         }
-        public  async Task<IEnumerable<TEntity>> GetAllAsync(bool trackChanges = false)
+        public async Task<IEnumerable<TEntity>> GetAllAsync(bool trackChanges = false)
         {
             if (typeof(TEntity) == typeof(Product))
             {
@@ -29,7 +29,7 @@ namespace Persistence.Repositories
             }
 
             return trackChanges ?
-                await _context.Set<TEntity>().ToListAsync() 
+                await _context.Set<TEntity>().ToListAsync()
                : await _context.Set<TEntity>().AsNoTracking().ToListAsync();
         }
 
@@ -51,16 +51,32 @@ namespace Persistence.Repositories
         public void Update(TEntity entity)
         {
             _context.Update(entity);
-                
-         }
+
+        }
 
 
         public void Delete(TEntity entity)
         {
-           _context.Remove(entity);
+            _context.Remove(entity);
         }
 
+        public async Task<IEnumerable<TEntity>> GetAllAsync(ISpecifications<TEntity, TKey> spec, bool trackChanges = false)
+        {
+            return await ApplySpecifications(spec).ToListAsync();
+        }
 
+        public async Task<TEntity?> GetAsync(ISpecifications<TEntity, TKey> spec)
+        {
+            return await ApplySpecifications(spec).FirstOrDefaultAsync();
+        }
+        private IQueryable<TEntity> ApplySpecifications(ISpecifications<TEntity,TKey> spec)
+            {
+            return  SpecificationEvaluator.GetQuary(_context.Set<TEntity>(), spec);
+            }
 
+        public async Task<int> CountAsync(ISpecifications<TEntity, TKey> spec)
+        {
+            return await ApplySpecifications(spec).CountAsync();
+        }
     }
 }

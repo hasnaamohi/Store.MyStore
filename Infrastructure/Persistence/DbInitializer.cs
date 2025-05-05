@@ -66,9 +66,9 @@ namespace Persistence
 
                 }
                 //seeding products from json file
-                if (_context.Products.Any())
+                if (!_context.Products.Any())
                 {
-                    var datatypes = await File.ReadAllTextAsync(@"..\\Infrastructure\\Persistence\\Seeding (json file)\\products.json");
+                    var datatypes = await File.ReadAllTextAsync(@"..\Infrastructure\Persistence\Data\Seeding(jsonFile)\products.json");
                     var data = JsonSerializer.Deserialize<List<Product>>(datatypes);
                     if (data is not null && data.Any())
                     {
